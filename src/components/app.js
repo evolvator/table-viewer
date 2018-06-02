@@ -6,7 +6,10 @@ import Table from "./table";
 const App = () => (
   <div>
     <Switch>
-      <Route path="/:path/:sort/:filter/" component={Table} />
+      <Route path="/" component={Table} />
+      <Route path="/:path" component={Table} />
+      <Route path="/:path/:sorted/" component={Table} />
+      <Route path="/:path/:sorted/:filtered/" component={Table} />
     </Switch>
   </div>
 );

@@ -15,7 +15,8 @@ class Table extends React.Component {
   state = { data: [], columns: [] };
   componentDidMount() {
     console.log("componentDidMount");
-    $.getJSON(decodeURIComponent(this.props.match.params.path), data => {
+    const path = decodeURIComponent(this.props.match.params.path);
+    $.getJSON(decodeURIComponent(this.props.match.params.path)).done(data => {
       this.setState({
         data,
         columns: _.map(
@@ -29,17 +30,24 @@ class Table extends React.Component {
     });
   }
   render() {
+    const filtered = this.props.match.params.filtered
+      ? JSON.parse(decodeURIComponent(this.props.match.params.filtered))
+      : [];
+    const sorted = this.props.match.params.sorted
+      ? JSON.parse(decodeURIComponent(this.props.match.params.sorted))
+      : [];
     return (
       <div>
         <ReactTable
           data={this.state.data}
           columns={this.state.columns}
+          noDataText={
+            this.state.noDataText ? this.state.noDataText : "Data not found."
+          }
           defaultPageSize={100}
           filterable
-          filtered={JSON.parse(
-            decodeURIComponent(this.props.match.params.filter)
-          )}
-          sorted={JSON.parse(decodeURIComponent(this.props.match.params.sort))}
+          filtered={filtered}
+          sorted={sorted}
           style={{
             position: "absolute",
             top: 0,
@@ -52,7 +60,7 @@ class Table extends React.Component {
               "/" +
                 [
                   this.props.match.params.path,
-                  this.props.match.params.sort,
+                  this.props.match.params.sorted,
                   encodeURIComponent(JSON.stringify(filtered))
                 ].join("/")
             );
@@ -63,7 +71,7 @@ class Table extends React.Component {
                 [
                   this.props.match.params.path,
                   encodeURIComponent(JSON.stringify(sorted)),
-                  this.props.match.params.filter
+                  this.props.match.params.filtered
                 ].join("/")
             );
           }}

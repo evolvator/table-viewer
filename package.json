@@ -1,11 +1,17 @@
 {
-  "name": "a-simple-react-router-v4-tutorial",
-  "description": "https://medium.com/@pshrmn/a-simple-react-router-v4-tutorial-7f23ff27adf",
+  "name": "json-table-viewer",
+  "description":
+    "Based on [React Table](https://react-table.js.org), shows json table with sorting and filtering stored in url path.",
   "version": "0.0.0",
   "dependencies": {
-    "react-router-dom": "4.1.1",
+    "jquery": "latest",
+    "lodash": "latest",
+    "normalize.css": "latest",
+    "react": "15.5.3",
     "react-dom": "15.5.3",
-    "react": "15.5.3"
+    "react-router": "latest",
+    "react-router-dom": "4.1.1",
+    "react-table": "latest"
   },
   "devDependencies": {
     "react-scripts": "1.0.0"
@@ -15,5 +21,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  }
+  },
+  "keywords": []
 }
