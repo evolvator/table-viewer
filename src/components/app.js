@@ -1,14 +1,17 @@
 import React from 'react';
-import { Switch, Route, Redirect } from 'react-router';
+import { Switch, Router, Route, Redirect } from 'react-router';
+import { BrowserRouter } from 'react-router-dom';
 
 import Table from './table';
 
 const App = () => (
   <div>
-    <Switch>
-      <Route path="/:config" component={Table} />
-      <Route component={() => <Redirect to="/{}" />} />
-    </Switch>
+    <BrowserRouter>
+      <Switch>
+        <Route path="/:config" component={Table} />
+        <Route component={() => <Redirect to="/{}" />} />
+      </Switch>
+    </BrowserRouter>
   </div>
 );
 

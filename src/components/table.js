@@ -10,13 +10,35 @@ import $ from 'jquery';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 
+let timeout;
+
 class Table extends React.Component {
   state = { data: [], columns: [] };
+  componentDidUpdate(prevProps) {
+    const prevConfig = this.getConfig(prevProps);
+    const config = this.getConfig(this.props);
+    console.log(prevConfig, config);
+    if (prevConfig.path !== config.path) {
+      this.setState({
+        data: [],
+        columns: []
+      });
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        this.getData();
+      }, 500);
+    }
+  }
   componentDidMount() {
     const config = this.getConfig();
     this.props.history.push(
       '/' + encodeURIComponent(JSON.stringify(_.extend(config)))
     );
+    this.getData();
+  }
+  getData() {
+    const config = this.getConfig();
+    this.setState({ data: [], columns: [] });
     $.getJSON(config.path).done(data => {
       this.setState({
         data,
@@ -30,9 +52,9 @@ class Table extends React.Component {
       });
     });
   }
-  getConfig() {
+  getConfig(props = this.props) {
     return _.defaults(
-      JSON.parse(decodeURIComponent(this.props.match.params.config)),
+      JSON.parse(decodeURIComponent(props.match.params.config)),
       {
         path: '',
         page: 0,
