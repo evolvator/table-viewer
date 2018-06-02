@@ -3,10 +3,7 @@ import { Link } from "react-router-dom";
 import { withRouter } from "react-router";
 
 import * as _ from "lodash";
-window._ = _;
-
 import $ from "jquery";
-window.$ = $;
 
 import ReactTable from "react-table";
 import "react-table/react-table.css";
@@ -14,7 +11,6 @@ import "react-table/react-table.css";
 class Table extends React.Component {
   state = { data: [], columns: [] };
   componentDidMount() {
-    console.log("componentDidMount");
     const path = decodeURIComponent(this.props.match.params.path);
     $.getJSON(decodeURIComponent(this.props.match.params.path)).done(data => {
       this.setState({
@@ -41,9 +37,6 @@ class Table extends React.Component {
         <ReactTable
           data={this.state.data}
           columns={this.state.columns}
-          noDataText={
-            this.state.noDataText ? this.state.noDataText : "Data not found."
-          }
           defaultPageSize={100}
           filterable
           filtered={filtered}
