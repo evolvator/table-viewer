@@ -1,12 +1,12 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { withRouter } from "react-router";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router';
 
-import * as _ from "lodash";
-import $ from "jquery";
+import * as _ from 'lodash';
+import $ from 'jquery';
 
-import ReactTable from "react-table";
-import "react-table/react-table.css";
+import ReactTable from 'react-table';
+import 'react-table/react-table.css';
 
 class Table extends React.Component {
   state = { data: [], columns: [] };
@@ -26,46 +26,84 @@ class Table extends React.Component {
     });
   }
   render() {
-    const filtered = this.props.match.params.filtered
-      ? JSON.parse(decodeURIComponent(this.props.match.params.filtered))
-      : [];
-    const sorted = this.props.match.params.sorted
-      ? JSON.parse(decodeURIComponent(this.props.match.params.sorted))
-      : [];
+    const path = this.props.match.params.path;
+    const page = parseFloat(this.props.match.params.page || 1);
+    const count = parseFloat(this.props.match.params.count || 100);
+    let filtered = [],
+      sorted = [];
+    if (this.props.match.params.filtered) {
+      filtered = this.props.match.params.filtered
+        ? JSON.parse(decodeURIComponent(this.props.match.params.filtered))
+        : [];
+    }
+    if (this.props.match.params.sorted) {
+      sorted = this.props.match.params.sorted
+        ? JSON.parse(decodeURIComponent(this.props.match.params.sorted))
+        : [];
+    }
     return (
       <div>
         <ReactTable
           data={this.state.data}
           columns={this.state.columns}
-          defaultPageSize={100}
+          page={page}
+          pageSize={count}
           filterable
           filtered={filtered}
           sorted={sorted}
           style={{
-            position: "absolute",
+            position: 'absolute',
             top: 0,
             left: 0,
-            height: "calc(100% - 5px)",
-            width: "calc(100% - 5px)"
+            height: 'calc(100% - 5px)',
+            width: 'calc(100% - 5px)'
           }}
           onFilteredChange={filtered => {
             this.props.history.push(
-              "/" +
+              '/' +
                 [
-                  this.props.match.params.path,
-                  this.props.match.params.sorted,
+                  path,
+                  page,
+                  count,
+                  encodeURIComponent(JSON.stringify(sorted)),
                   encodeURIComponent(JSON.stringify(filtered))
-                ].join("/")
+                ].join('/')
             );
           }}
           onSortedChange={sorted => {
             this.props.history.push(
-              "/" +
+              '/' +
                 [
-                  this.props.match.params.path,
+                  path,
+                  page,
+                  count,
                   encodeURIComponent(JSON.stringify(sorted)),
-                  this.props.match.params.filtered
-                ].join("/")
+                  encodeURIComponent(JSON.stringify(filtered))
+                ].join('/')
+            );
+          }}
+          onPageChange={page => {
+            this.props.history.push(
+              '/' +
+                [
+                  path,
+                  page,
+                  count,
+                  encodeURIComponent(JSON.stringify(sorted)),
+                  encodeURIComponent(JSON.stringify(filtered))
+                ].join('/')
+            );
+          }}
+          onPageSizeChange={count => {
+            this.props.history.push(
+              '/' +
+                [
+                  path,
+                  page,
+                  count,
+                  encodeURIComponent(JSON.stringify(sorted)),
+                  encodeURIComponent(JSON.stringify(filtered))
+                ].join('/')
             );
           }}
         />

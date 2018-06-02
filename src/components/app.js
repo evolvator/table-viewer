@@ -1,15 +1,13 @@
-import React from "react";
-import { Switch, Route } from "react-router";
+import React from 'react';
+import { Switch, Route, Redirect } from 'react-router';
 
-import Table from "./table";
+import Table from './table';
 
 const App = () => (
   <div>
     <Switch>
-      <Route path="/:path/:sorted/:filtered/" component={Table} />
-      <Route path="/:path/:sorted/" component={Table} />
-      <Route path="/:path" component={Table} />
-      <Route path="/" component={Table} />
+      <Route path="/:path/:page/:count/:sorted/:filtered/" component={Table} />
+      <Route component={() => <Redirect to="/?/0/100/[]/[]" />} />
     </Switch>
   </div>
 );
