@@ -4,6 +4,7 @@
     "Based on [React Table](https://react-table.js.org), shows json table with sorting and filtering stored in url path.",
   "version": "0.0.0",
   "dependencies": {
+    "@material-ui/core": "1.1.0",
     "jquery": "latest",
     "lodash": "latest",
     "normalize.css": "latest",

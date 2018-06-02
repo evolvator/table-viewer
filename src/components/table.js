@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
+import Paper from '@material-ui/core/Paper';
+import TextField from '@material-ui/core/TextField';
 
 import * as _ from 'lodash';
 import $ from 'jquery';
@@ -11,8 +13,11 @@ import 'react-table/react-table.css';
 class Table extends React.Component {
   state = { data: [], columns: [] };
   componentDidMount() {
-    const path = decodeURIComponent(this.props.match.params.path);
-    $.getJSON(decodeURIComponent(this.props.match.params.path)).done(data => {
+    const config = this.getConfig();
+    this.props.history.push(
+      '/' + encodeURIComponent(JSON.stringify(_.extend(config)))
+    );
+    $.getJSON(config.path).done(data => {
       this.setState({
         data,
         columns: _.map(
@@ -25,85 +30,86 @@ class Table extends React.Component {
       });
     });
   }
+  getConfig() {
+    return _.defaults(
+      JSON.parse(decodeURIComponent(this.props.match.params.config)),
+      {
+        path: '',
+        page: 0,
+        count: 100,
+        filtered: [],
+        sorted: []
+      }
+    );
+  }
   render() {
-    const path = this.props.match.params.path;
-    const page = parseFloat(this.props.match.params.page || 1);
-    const count = parseFloat(this.props.match.params.count || 100);
-    let filtered = [],
-      sorted = [];
-    if (this.props.match.params.filtered) {
-      filtered = this.props.match.params.filtered
-        ? JSON.parse(decodeURIComponent(this.props.match.params.filtered))
-        : [];
-    }
-    if (this.props.match.params.sorted) {
-      sorted = this.props.match.params.sorted
-        ? JSON.parse(decodeURIComponent(this.props.match.params.sorted))
-        : [];
-    }
+    const config = this.getConfig();
     return (
-      <div>
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          height: 'calc(100% - 2px)',
+          width: 'calc(100% - 2px)'
+        }}
+      >
+        <Paper style={{ padding: 6 }}>
+          <TextField
+            id="with-placeholder"
+            label="https url path to json file"
+            placeholder="https url path to json file"
+            value={config.path}
+            onChange={event => {
+              this.props.history.push(
+                '/' +
+                  encodeURIComponent(
+                    JSON.stringify(
+                      _.extend(config, { path: event.target.value })
+                    )
+                  )
+              );
+            }}
+            margin="dense"
+            fullWidth
+          />
+        </Paper>
         <ReactTable
           data={this.state.data}
           columns={this.state.columns}
-          page={page}
-          pageSize={count}
+          page={config.page}
+          pageSize={config.count}
           filterable
-          filtered={filtered}
-          sorted={sorted}
+          filtered={config.filtered}
+          sorted={config.sorted}
           style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            height: 'calc(100% - 5px)',
-            width: 'calc(100% - 5px)'
+            height: 'calc(100% - 80px)',
+            width: '100%'
           }}
           onFilteredChange={filtered => {
             this.props.history.push(
               '/' +
-                [
-                  path,
-                  page,
-                  count,
-                  encodeURIComponent(JSON.stringify(sorted)),
-                  encodeURIComponent(JSON.stringify(filtered))
-                ].join('/')
+                encodeURIComponent(
+                  JSON.stringify(_.extend(config, { filtered }))
+                )
             );
           }}
           onSortedChange={sorted => {
             this.props.history.push(
               '/' +
-                [
-                  path,
-                  page,
-                  count,
-                  encodeURIComponent(JSON.stringify(sorted)),
-                  encodeURIComponent(JSON.stringify(filtered))
-                ].join('/')
+                encodeURIComponent(JSON.stringify(_.extend(config, { sorted })))
             );
           }}
           onPageChange={page => {
             this.props.history.push(
               '/' +
-                [
-                  path,
-                  page,
-                  count,
-                  encodeURIComponent(JSON.stringify(sorted)),
-                  encodeURIComponent(JSON.stringify(filtered))
-                ].join('/')
+                encodeURIComponent(JSON.stringify(_.extend(config, { page })))
             );
           }}
           onPageSizeChange={count => {
             this.props.history.push(
               '/' +
-                [
-                  path,
-                  page,
-                  count,
-                  encodeURIComponent(JSON.stringify(sorted)),
-                  encodeURIComponent(JSON.stringify(filtered))
-                ].join('/')
+                encodeURIComponent(JSON.stringify(_.extend(config, { count })))
             );
           }}
         />

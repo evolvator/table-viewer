@@ -6,8 +6,8 @@ import Table from './table';
 const App = () => (
   <div>
     <Switch>
-      <Route path="/:path/:page/:count/:sorted/:filtered/" component={Table} />
-      <Route component={() => <Redirect to="/?/0/100/[]/[]" />} />
+      <Route path="/:config" component={Table} />
+      <Route component={() => <Redirect to="/{}" />} />
     </Switch>
   </div>
 );
