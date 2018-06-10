@@ -205,8 +205,8 @@ class Table extends React.Component {
           b = b === null || b === undefined ? -Infinity : b;
           // convert to number if possible
           if (!_.isNaN(parseFloat(a)) && !_.isNaN(parseFloat(b))) {
-            if (_.toNumber(a) > _.toNumber(b)) return 1;
-            if (_.toNumber(a) < _.toNumber(b)) return -1;
+            if (parseFloat(a) > parseFloat(b)) return 1;
+            if (parseFloat(a) < parseFloat(b)) return -1;
           } else {
             // force any string values to lowercase
             a = typeof a === "string" ? a.toLowerCase() : a;
