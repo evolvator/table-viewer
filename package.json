@@ -4,15 +4,18 @@
     "Based on [React Table](https://react-table.js.org), shows json table with sorting and filtering stored in url path.",
   "version": "0.0.0",
   "dependencies": {
-    "@material-ui/core": "1.1.0",
-    "jquery": "latest",
-    "lodash": "latest",
-    "normalize.css": "latest",
-    "react": "15.5.3",
-    "react-dom": "15.5.3",
-    "react-router": "latest",
-    "react-router-dom": "4.1.1",
-    "react-table": "latest"
+    "@material-ui/core": "1.2.0",
+    "@material-ui/icons": "latest",
+    "jquery": "3.3.1",
+    "lodash": "4.17.10",
+    "normalize.css": "8.0.0",
+    "react": "16.4.0",
+    "react-dom": "16.4.0",
+    "react-router": "4.3.1",
+    "react-router-dom": "4.3.1",
+    "react-sortable-hoc": "latest",
+    "react-table": "6.8.6",
+    "store": "2.0.12"
   },
   "devDependencies": {
     "react-scripts": "1.0.0"

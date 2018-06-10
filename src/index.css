@@ -1,0 +1,8 @@
+.ReactTable .rt-td {
+  padding: 0;
+}
+.ReactTable .rt-thead.-filters input,
+.ReactTable .rt-thead.-filters select {
+  border: 0;
+  background-color: transparent;
+}
