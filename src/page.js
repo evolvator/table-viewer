@@ -1,27 +1,29 @@
-import React from "react";
-import { withRouter } from "react-router";
+import React from 'react';
+import { withRouter } from 'react-router';
 
-import Grid from "@material-ui/core/Grid";
+import Grid from '@material-ui/core/Grid';
 
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
 
-import * as _ from "lodash";
-import $ from "jquery";
+import * as _ from 'lodash';
+import $ from 'jquery';
 
-import Path from "./path";
-import Table from "./table";
-import Sort from "./sort";
+import Path from './path';
+import Table from './table';
+import Sort from './sort';
 
 let timeout;
 class Page extends React.Component {
   state = { data: [], columns: [], maxValues: {}, uniqueValues: {} };
   getConfig = (props = this.props) => {
     var urlConfig = {
-      path: "",
+      path: '',
       sorted: [],
-      filtered: []
+      filtered: [],
+      page: 0,
+      pageSize: 50
     };
     try {
       urlConfig = _.defaults(
@@ -34,7 +36,7 @@ class Page extends React.Component {
   saveConfig = newConfig => {
     const config = this.getConfig();
     this.props.history.push(
-      "/" + encodeURIComponent(JSON.stringify(_.extend(config, newConfig)))
+      '/' + encodeURIComponent(JSON.stringify(_.extend(config, newConfig)))
     );
   };
   load() {

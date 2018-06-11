@@ -1,20 +1,20 @@
-import React from "react";
+import React from 'react';
 
-import ReactTable from "react-table";
-import "react-table/react-table.css";
+import ReactTable from 'react-table';
+import 'react-table/react-table.css';
 
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
-import Button from "@material-ui/core/Button";
+import Button from '@material-ui/core/Button';
 
-import Paper from "@material-ui/core/Paper";
+import Paper from '@material-ui/core/Paper';
 
-import FilterList from "@material-ui/icons/FilterList";
+import FilterList from '@material-ui/icons/FilterList';
 
-import TextField from "@material-ui/core/TextField";
+import TextField from '@material-ui/core/TextField';
 
-import * as _ from "lodash";
+import * as _ from 'lodash';
 
 class FilterComponent extends React.Component {
   state = {
@@ -30,14 +30,14 @@ class FilterComponent extends React.Component {
       id: column,
       value: {
         allowed: [],
-        regexp: ""
+        regexp: ''
       }
     };
     if (!_.isObject(filteredColumn.value)) filteredColumn.value = {};
     if (!_.isArray(filteredColumn.value.allowed))
       filteredColumn.value.allowed = [];
     if (!_.isString(filteredColumn.value.regexp))
-      filteredColumn.value.regexp = "";
+      filteredColumn.value.regexp = '';
 
     return (
       <span>
@@ -58,7 +58,7 @@ class FilterComponent extends React.Component {
               <Button
                 size="small"
                 style={{
-                  textTransform: "none",
+                  textTransform: 'none',
                   minWidth: 30,
                   minHeight: 0,
                   padding: 0
@@ -73,8 +73,8 @@ class FilterComponent extends React.Component {
                 <FilterList
                   color={
                     filteredColumn.value.allowed.length
-                      ? "secondary"
-                      : "default"
+                      ? 'secondary'
+                      : 'inherit'
                   }
                 />
               </Button>
@@ -99,7 +99,7 @@ class FilterComponent extends React.Component {
         >
           <Paper
             style={{
-              position: "sticky",
+              position: 'sticky',
               top: 0,
               zIndex: 2
             }}
@@ -164,15 +164,15 @@ class Table extends React.Component {
       ),
       Cell: row => {
         return (
-          <div style={{ position: "relative" }}>
+          <div style={{ position: 'relative' }}>
             <div
               style={{
-                backgroundColor: "black",
+                backgroundColor: 'black',
                 opacity: 0.1,
-                position: "absolute",
+                position: 'absolute',
                 left: 0,
                 top: 0,
-                height: "100%",
+                height: '100%',
                 width: `${Math.round(
                   _.toNumber(row.value) / maxValues[column] * 100
                 )}%`
@@ -187,19 +187,29 @@ class Table extends React.Component {
   onSortedChange = sorted => {
     this.props.saveConfig({ sorted });
   };
+  onPageChange = page => {
+    this.props.saveConfig({ page });
+  };
+  onPageSizeChange = pageSize => {
+    this.props.saveConfig({ pageSize });
+  };
   onFilteredChange = filtered => {
     this.props.saveConfig({ filtered });
   };
   render() {
     const { data } = this.props;
-    const { config: { sorted, filtered } } = this.props;
+    const { config: { sorted, filtered, page, pageSize } } = this.props;
 
     return (
       <ReactTable
         data={data}
         columns={this.generateColumns()}
-        sorted={sorted}
+        onPageChange={this.onPageChange}
+        page={page}
+        onPageSizeChange={this.onPageSizeChange}
+        pageSize={pageSize}
         onSortedChange={this.onSortedChange}
+        sorted={sorted}
         onFilteredChange={this.onFilteredChange}
         filtered={filtered}
         filterable
@@ -213,8 +223,8 @@ class Table extends React.Component {
             if (parseFloat(a) < parseFloat(b)) return -1;
           } else {
             // force any string values to lowercase
-            a = typeof a === "string" ? a.toLowerCase() : a;
-            b = typeof b === "string" ? b.toLowerCase() : b;
+            a = typeof a === 'string' ? a.toLowerCase() : a;
+            b = typeof b === 'string' ? b.toLowerCase() : b;
             // Return either 1 or -1 to indicate a sort priority
             if (a > b) return 1;
             if (a < b) return -1;
