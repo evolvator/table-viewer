@@ -17,14 +17,15 @@ import Sort from './sort';
 let timeout;
 class Page extends React.Component {
   state = { data: [], columns: [], maxValues: {}, uniqueValues: {} };
+  getDefaultConfig = () => ({
+    path: '',
+    sorted: [],
+    filtered: [],
+    page: 0,
+    pageSize: 50
+  });
   getConfig = (props = this.props) => {
-    var urlConfig = {
-      path: '',
-      sorted: [],
-      filtered: [],
-      page: 0,
-      pageSize: 50
-    };
+    var urlConfig = this.getDefaultConfig();
     try {
       urlConfig = _.defaults(
         JSON.parse(decodeURIComponent(props.match.params.config)),
@@ -74,7 +75,12 @@ class Page extends React.Component {
     const config = this.getConfig(this.props);
     if (prevConfig.path !== config.path) {
       clearTimeout(timeout);
-      timeout = setTimeout(() => this.load(), 500);
+      timeout = setTimeout(() => {
+        this.saveConfig(
+          _.defaults({ path: config.path }, this.getDefaultConfig())
+        );
+        this.load();
+      }, 500);
     }
   }
   componentDidMount() {

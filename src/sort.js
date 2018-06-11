@@ -1,15 +1,15 @@
-import React from "react";
+import React from 'react';
 
-import Button from "@material-ui/core/Button";
-import FormHelperText from "@material-ui/core/FormHelperText";
+import Button from '@material-ui/core/Button';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 import {
   SortableContainer,
   SortableElement,
   arrayMove
-} from "react-sortable-hoc";
+} from 'react-sortable-hoc';
 
-import * as _ from "lodash";
+import * as _ from 'lodash';
 
 const SortableItem = SortableElement(
   ({ saveConfig, config: { sorted }, value }) => {
@@ -20,13 +20,13 @@ const SortableItem = SortableElement(
         style={{
           ...(value.desc
             ? {
-                borderBottom: "3px #5f5f5f solid"
+                borderBottom: '3px #5f5f5f solid'
               }
             : {
-                borderTop: "3px #5f5f5f solid"
+                borderTop: '3px #5f5f5f solid'
               }),
           margin: 3,
-          textTransform: "none"
+          textTransform: 'none'
         }}
         onClick={event => {
           if (event.shiftKey && value.desc) {
@@ -67,7 +67,8 @@ class Sort extends React.Component {
     return (
       <div>
         <FormHelperText>
-          Mouse draggable sorting (shift click to delete)
+          Mouse draggable sorting. Shift click to delete. Shift click by column
+          for adding.
         </FormHelperText>
         <SortableList
           {...this.props}
