@@ -70,7 +70,13 @@ class FilterComponent extends React.Component {
                   });
                 }}
               >
-                <FilterList />
+                <FilterList
+                  color={
+                    filteredColumn.value.allowed.length
+                      ? "secondary"
+                      : "default"
+                  }
+                />
               </Button>
             )
           }}
@@ -192,8 +198,6 @@ class Table extends React.Component {
       <ReactTable
         data={data}
         columns={this.generateColumns()}
-        pageSize={data.length}
-        showPagination={false}
         sorted={sorted}
         onSortedChange={this.onSortedChange}
         onFilteredChange={this.onFilteredChange}

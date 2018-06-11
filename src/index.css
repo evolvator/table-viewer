@@ -6,3 +6,15 @@
   border: 0;
   background-color: transparent;
 }
+.ReactTable .rt-tbody .rt-tr:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.ReactTable .-pagination {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: white;
+}
+.ReactTable {
+  margin-bottom: 44px;
+}
