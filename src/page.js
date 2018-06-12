@@ -43,7 +43,7 @@ class Page extends React.Component {
   };
   load() {
     const config = this.getConfig();
-    this.setState(getDefaultState());
+    this.setState(this.getDefaultState());
     $.getJSON(config.path).done(data => {
       if (_.isArray(data)) {
         const columns = _.uniq(_.flatten(_.map(data, value => _.keys(value))));
