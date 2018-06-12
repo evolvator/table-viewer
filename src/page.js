@@ -37,7 +37,7 @@ class Page extends React.Component {
   saveConfig = newConfig => {
     const config = this.getConfig();
     this.props.history.push(
-      '/' + encodeURIComponent(JSON.stringify(_.extend(config, newConfig)))
+      `${process.env.PUBLIC_URL}/${encodeURIComponent(JSON.stringify(_.extend(config, newConfig)))}`
     );
   };
   load() {

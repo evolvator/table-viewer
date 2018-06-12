@@ -1,6 +1,6 @@
 import React from "react";
 import { render } from "react-dom";
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from 'react-router-dom'
 import { Switch, Router, Route, Redirect } from "react-router";
 import Page from "./page";
 
@@ -9,18 +9,13 @@ import "./index.css";
 
 const App = () => (
   <div>
-    <BrowserRouter>
+    <HashRouter>
       <Switch>
-        <Route path="/:config" component={() => <Page />} />
-        <Route component={() => <Redirect to="/{}" />} />
+        <Route path={`${process.env.PUBLIC_URL}/:config`} component={() => <Page />} />
+        <Route component={() => <Redirect to={`${process.env.PUBLIC_URL}/{}`} />} />
       </Switch>
-    </BrowserRouter>
+    </HashRouter>
   </div>
 );
 
-render(
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>,
-  document.getElementById("root")
-);
+render(<App />, document.getElementById("root"));
