@@ -1,8 +1,6 @@
 {
-  "name": "json-table-viewer",
-  "description":
-    "Based on [React Table](https://react-table.js.org), shows json table with sorting and filtering stored in url path.",
-  "version": "0.0.0",
+  "private": true,
+  "homepage": "http://ivansglazunov.github.io/json-table-viewer",
   "dependencies": {
     "@material-ui/core": "1.2.0",
     "@material-ui/icons": "latest",
@@ -18,13 +16,16 @@
     "store": "2.0.12"
   },
   "devDependencies": {
+    "gh-pages": "^1.2.0",
     "react-scripts": "1.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "keywords": []
 }
