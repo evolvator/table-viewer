@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactTable from 'react-table';
 
 import TextField from '@material-ui/core/TextField';
 

@@ -136,14 +136,11 @@ class FilterComponent extends React.Component {
 
 class Table extends React.Component {
   generateColumns = () => {
-    const { config: { filtered }, columns, maxValues } = this.props;
+    const { columns, maxValues } = this.props;
 
     return columns.map(column => ({
       Header: () => <div>{column}</div>,
       accessor: column,
-      filterMethod: (filter, row) => {
-        return true;
-      },
       filterMethod: (filter, row) => {
         if (filter.value) {
           if (filter.value.allowed && filter.value.allowed.length) {

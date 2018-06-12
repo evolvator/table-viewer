@@ -3,10 +3,6 @@ import { withRouter } from 'react-router';
 
 import Grid from '@material-ui/core/Grid';
 
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-
 import * as _ from 'lodash';
 import $ from 'jquery';
 
@@ -38,7 +34,7 @@ class Page extends React.Component {
   saveConfig = newConfig => {
     const config = this.getConfig();
     this.props.history.push(
-      `${process.env.PUBLIC_URL}/${encodeURIComponent(JSON.stringify(_.extend(config, newConfig)))}`
+      `/${encodeURIComponent(JSON.stringify(_.extend(config, newConfig)))}`
     );
   };
   load() {
