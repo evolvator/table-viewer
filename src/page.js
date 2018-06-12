@@ -16,7 +16,8 @@ import Sort from './sort';
 
 let timeout;
 class Page extends React.Component {
-  state = { data: [], columns: [], maxValues: {}, uniqueValues: {} };
+  getDefaultState = () => ({ data: [], columns: [], maxValues: {}, uniqueValues: {} });
+  state = this.getDefaultState();
   getDefaultConfig = () => ({
     path: '',
     sorted: [],
@@ -42,6 +43,7 @@ class Page extends React.Component {
   };
   load() {
     const config = this.getConfig();
+    this.setState(getDefaultState());
     $.getJSON(config.path).done(data => {
       if (_.isArray(data)) {
         const columns = _.uniq(_.flatten(_.map(data, value => _.keys(value))));
