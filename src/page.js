@@ -1,111 +1,100 @@
-import React from 'react';
-import { withRouter } from 'react-router';
+import React from "react";
 
-import Grid from '@material-ui/core/Grid';
+import { withRouter } from "react-router";
+import { withStyles } from "@material-ui/core/styles";
+import classNames from "classnames";
 
-import * as _ from 'lodash';
-import $ from 'jquery';
+import Drawer from "@material-ui/core/Drawer";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Grid from "@material-ui/core/Grid";
+import IconButton from "@material-ui/core/IconButton";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
-import Path from './path';
-import Table from './table';
-import Sort from './sort';
+import MenuIcon from "@material-ui/icons/Menu";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 
-let timeout;
+import * as _ from "lodash";
+import $ from "jquery";
+
+import Config, { ConfigContext } from "./config";
+import Data, { DataContext } from "./data";
+import Path from "./path";
+import LeftDrawer from "./left-drawer";
+import Table from "./table";
+
+const styles = theme => ({
+  appBar: {
+    backgroundColor: "white"
+  },
+  leftDrawerOpenedPaper: {
+    width: 300
+  },
+  toolbarPlaceholder: {
+    ...theme.mixins.toolbar
+  },
+  progress: {
+    position: "absolute",
+    top: 0,
+    width: "100%"
+  }
+});
+
 class Page extends React.Component {
-  getDefaultState = () => ({ data: [], columns: [], maxValues: {}, uniqueValues: {} });
-  state = this.getDefaultState();
-  getDefaultConfig = () => ({
-    path: '',
-    sorted: [],
-    filtered: [],
-    page: 0,
-    pageSize: 50
-  });
-  getConfig = (props = this.props) => {
-    var urlConfig = this.getDefaultConfig();
-    try {
-      urlConfig = _.defaults(
-        JSON.parse(decodeURIComponent(props.match.params.config)),
-        urlConfig
-      );
-    } catch (error) {}
-    return urlConfig;
+  state = {
+    leftDrawerOpened: false
   };
-  saveConfig = newConfig => {
-    const config = this.getConfig();
-    this.props.history.push(
-      `/${encodeURIComponent(JSON.stringify(_.extend(config, newConfig)))}`
-    );
-  };
-  load() {
-    const config = this.getConfig();
-    this.setState(this.getDefaultState());
-    $.getJSON(config.path).done(data => {
-      if (_.isArray(data)) {
-        const columns = _.uniq(_.flatten(_.map(data, value => _.keys(value))));
-        const maxValues = {};
-        for (let c = 0; c < columns.length; c++) {
-          maxValues[columns[c]] = null;
-          for (let d = 0; d < data.length; d++) {
-            let value = _.toNumber(data[d][columns[c]]);
-            if (
-              !_.isNumber(maxValues[columns[c]]) ||
-              maxValues[columns[c]] < value
-            ) {
-              maxValues[columns[c]] = value;
-            }
-          }
-        }
-        const uniqueValues = {};
-        _.each(columns, column => {
-          uniqueValues[column] = uniqueValues[column] || [];
-          uniqueValues[column] = _.map(
-            _.uniqBy(data, column),
-            row => row[column]
-          );
-        });
-        this.setState({ data, columns, maxValues, uniqueValues });
-      }
-    });
-  }
-  componentDidUpdate(prevProps) {
-    const prevConfig = this.getConfig(prevProps);
-    const config = this.getConfig(this.props);
-    if (prevConfig.path !== config.path) {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        this.saveConfig(
-          _.defaults({ path: config.path }, this.getDefaultConfig())
-        );
-        this.load();
-      }, 500);
-    }
-  }
-  componentDidMount() {
-    this.load();
-  }
+  toggleLeftDrawer = event =>
+    this.setState({ leftDrawerOpened: !this.state.leftDrawerOpened });
   render() {
-    const config = this.getConfig();
-    const args = {
-      ...this.state,
-      config,
-      saveConfig: this.saveConfig
-    };
+    const { classes } = this.props;
+    const { leftDrawerOpened } = this.state;
 
     return (
-      <Grid container>
-        <Grid item xs={12} md={6} style={{ padding: 6 }}>
-          <Path config={config} saveConfig={this.saveConfig} />
-        </Grid>
-        <Grid item xs={12} md={6} style={{ padding: 6 }}>
-          <Sort {...args} />
-        </Grid>
-        <Grid item xs={12}>
-          <Table {...args} />
-        </Grid>
-      </Grid>
+      <div>
+        <Config>
+          <Data>
+            <AppBar color="default" classes={{ root: classes.appBar }}>
+              <Toolbar>
+                <IconButton
+                  aria-label="open drawer"
+                  onClick={this.toggleLeftDrawer}
+                >
+                  <MenuIcon />
+                </IconButton>
+                <Path />
+              </Toolbar>
+              <DataContext.Consumer>
+                {({ loading, loaded, broken }) => (
+                  <LinearProgress
+                    className={classes.progress}
+                    variant={loading === 1 ? "query" : "determinate"}
+                    value={loading === 2 || loaded === -1 ? 100 : 0}
+                    color={loading === -1 ? "secondary" : "primary"}
+                  />
+                )}
+              </DataContext.Consumer>
+            </AppBar>
+            <Drawer
+              open={leftDrawerOpened}
+              anchor="left"
+              classes={{ paper: classes.leftDrawerOpenedPaper }}
+              onClose={this.toggleLeftDrawer}
+            >
+              <LeftDrawer />
+            </Drawer>
+            <div>
+              <div className={classes.toolbarPlaceholder} />
+              <Table />
+            </div>
+          </Data>
+        </Config>
+      </div>
     );
   }
 }
 
-export default withRouter(Page);
+export default withRouter(withStyles(styles)(Page));

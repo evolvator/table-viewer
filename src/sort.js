@@ -1,89 +1,151 @@
-import React from 'react';
+import React from "react";
 
-import Button from '@material-ui/core/Button';
-import FormHelperText from '@material-ui/core/FormHelperText';
+import { withStyles } from "@material-ui/core/styles";
+
+import Paper from "@material-ui/core/Paper";
+import IconButton from "@material-ui/core/IconButton";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import MenuItem from "@material-ui/core/MenuItem";
+import ListSubheader from "@material-ui/core/ListSubheader";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import Divider from "@material-ui/core/Divider";
+
+import Add from "@material-ui/icons/Add";
+import Remove from "@material-ui/icons/Remove";
+import Clear from "@material-ui/icons/Clear";
+import Sync from "@material-ui/icons/Sync";
+
+import ArrowDropDown from "@material-ui/icons/ArrowDropDown";
+import ArrowDropUp from "@material-ui/icons/ArrowDropUp";
 
 import {
   SortableContainer,
   SortableElement,
   arrayMove
-} from 'react-sortable-hoc';
+} from "react-sortable-hoc";
 
-import * as _ from 'lodash';
+import * as _ from "lodash";
+
+import { ConfigContext } from "./config";
+import { DataContext } from "./data";
 
 const SortableItem = SortableElement(
-  ({ saveConfig, config: { sorted }, value }) => {
+  ({ value: { id, desc }, onChange, onDelete }) => {
     return (
-      <Button
-        variant="outlined"
-        size="small"
-        style={{
-          ...(value.desc
-            ? {
-                borderBottom: '3px #5f5f5f solid'
-              }
-            : {
-                borderTop: '3px #5f5f5f solid'
-              }),
-          margin: 3,
-          textTransform: 'none'
-        }}
-        onClick={event => {
-          if (event.shiftKey && value.desc) {
-            _.remove(sorted, sort => sort.id === value.id);
-            saveConfig({ sorted });
-          } else {
-            saveConfig({
-              sorted: _.map(sorted, sort => {
-                if (sort.id === value.id) {
-                  sort.desc = !sort.desc;
-                }
-                return sort;
-              })
-            });
-          }
-        }}
-      >
-        {value.id}
-      </Button>
+      <Paper>
+        <MenuItem>
+          {id}
+          <ListItemSecondaryAction>
+            <IconButton onClick={onChange}>
+              {desc ? <ArrowDropDown /> : <ArrowDropUp />}
+            </IconButton>
+            <IconButton onClick={onDelete}>{<Clear />}</IconButton>
+          </ListItemSecondaryAction>
+        </MenuItem>
+      </Paper>
     );
   }
 );
 
-const SortableList = SortableContainer(props => {
+const SortableList = SortableContainer(({ list, onChange, onDelete }) => {
   return (
-    <div>
-      {props.items.map((value, index) => (
-        <SortableItem {...props} key={value.id} value={value} index={index} />
+    <List>
+      {list.map((value, index) => (
+        <SortableItem
+          key={value.id}
+          value={value}
+          onDelete={onDelete(value)}
+          onChange={onChange(value)}
+          index={index}
+        />
       ))}
-    </div>
+    </List>
   );
 });
 
+const styles = theme => ({
+  tabRoot: {
+    minWidth: 50,
+    textTranform: "none"
+  },
+  helper: {
+    zIndex: 5000,
+    listStyleType: "none"
+  }
+});
+
 class Sort extends React.Component {
+  onDelete = column => () => {
+    _.remove(this.sorted, c => c.id === column.id);
+    this.save({ sorted: this.sorted });
+  };
+  onChange = column => () => {
+    column.desc = !column.desc;
+    this.save({ sorted: this.sorted });
+  };
+  onAdd = columnName => () => {
+    const { sorted } = this;
+    sorted.push({ id: columnName, desc: true });
+    this.save({ sorted });
+  };
+  onSortEnd = ({ oldIndex, newIndex }) => {
+    this.save({ sorted: arrayMove(this.sorted, oldIndex, newIndex) });
+  };
   render() {
-    const { config: { sorted }, saveConfig } = this.props;
+    const { classes } = this.props;
 
     return (
       <div>
-        <FormHelperText>
-          Mouse draggable sorting. Shift click to delete. Shift click by column
-          for adding.
-        </FormHelperText>
-        <SortableList
-          {...this.props}
-          items={sorted}
-          axis="x"
-          distance={3}
-          onSortEnd={({ oldIndex, newIndex }) => {
-            saveConfig({
-              sorted: arrayMove(sorted, oldIndex, newIndex)
-            });
+        <ConfigContext.Consumer>
+          {({ sorted, save }) => {
+            this.sorted = sorted;
+            this.save = save;
+
+            return (
+              <DataContext.Consumer>
+                {({ allColumns }) => {
+                  this.allColumns = allColumns;
+
+                  return (
+                    <span>
+                      <ListSubheader>Sorted:</ListSubheader>
+                      <SortableList
+                        distance={3}
+                        axis="y"
+                        lockAxis="y"
+                        helperClass={classes.helper}
+                        list={sorted}
+                        onSortEnd={this.onSortEnd}
+                        onChange={this.onChange}
+                        onDelete={this.onDelete}
+                      />
+                      <Divider />
+                      <ListSubheader>Not sorted:</ListSubheader>
+                      <List>
+                        {_.difference(allColumns, _.map(sorted, s => s.id)).map(
+                          (value, index) => (
+                            <MenuItem
+                              key={value.id}
+                              onClick={this.onAdd(value)}
+                            >
+                              {value}
+                            </MenuItem>
+                          )
+                        )}
+                      </List>
+                    </span>
+                  );
+                }}
+              </DataContext.Consumer>
+            );
           }}
-        />
+        </ConfigContext.Consumer>
       </div>
     );
   }
 }
 
-export default Sort;
+export default withStyles(styles)(Sort);

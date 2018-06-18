@@ -1,21 +1,40 @@
-import React from 'react';
+import React from "react";
 
-import TextField from '@material-ui/core/TextField';
+import { ConfigContext } from "./config";
+import { DataContext } from "./data";
+
+import TextField from "@material-ui/core/TextField";
+
+import isUrl from "is-url";
 
 class Path extends React.Component {
+  state = {
+    valid: true
+  };
   render() {
-    const { config: { path }, saveConfig } = this.props;
+    const { valid } = this.state;
 
     return (
-      <TextField
-        label="Path to json file, required https url."
-        value={path}
-        onChange={event => {
-          saveConfig({ path: event.target.value });
-        }}
-        margin="dense"
-        fullWidth
-      />
+      <ConfigContext.Consumer>
+        {({ path, save }) => (
+          <DataContext.Consumer>
+            {({ loading }) => (
+              <TextField
+                label="Path to json file, required https url."
+                error={!valid || loading === -1}
+                value={path}
+                onChange={event => {
+                  const { target: { value } } = event;
+                  save({ path: event.target.value });
+                  this.setState({ valid: !value || isUrl(value) });
+                }}
+                margin="dense"
+                fullWidth
+              />
+            )}
+          </DataContext.Consumer>
+        )}
+      </ConfigContext.Consumer>
     );
   }
 }

@@ -1,9 +1,11 @@
 {
   "private": true,
-  "homepage": "http://ivansglazunov.github.io/json-table-viewer",
+  "homepage": "http://evolvator.github.io/table-viewer",
   "dependencies": {
     "@material-ui/core": "1.2.0",
     "@material-ui/icons": "latest",
+    "classnames": "latest",
+    "is-url": "latest",
     "jquery": "3.3.1",
     "lodash": "4.17.10",
     "normalize.css": "8.0.0",
