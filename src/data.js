@@ -66,7 +66,7 @@ class Data extends React.Component {
     return { data, maxValues, allColumns };
   };
   parseJSONArray = fetchedData => {
-    const { save, columns, filtered } = this.configContext;
+    const { save, columns, filtered, sorted } = this.configContext;
     const { data, maxValues, allColumns } = this.filterData(fetchedData);
 
     const uniqueValues = {};
@@ -101,7 +101,13 @@ class Data extends React.Component {
       _.remove(filtered, ({ id }) => id === columnName)
     );
 
-    save({ columns, filtered });
+    const oldSorted = _.difference(_.map(sorted, c => c.id), allColumns);
+
+    _.each(oldSorted, columnName =>
+      _.remove(sorted, ({ id }) => id === columnName)
+    );
+
+    save({ columns, filtered, sorted });
   };
   pathChanged = path => {
     setTimeout(() => {
