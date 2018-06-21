@@ -32,7 +32,6 @@ import { DataContext } from "./data";
 class FilterInput extends React.Component {
   onRegexpChange = column => event => {
     column.regexp = event.target.value;
-    console.log(column);
     this.saveColumn(column)();
   };
   saveColumn = column => () => {
