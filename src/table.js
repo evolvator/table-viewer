@@ -10,6 +10,8 @@ import { DataContext } from "./data";
 import FilterInput from "./filter-input";
 import FilterMenu from "./filter-menu";
 
+var pageSizes = [5, 10, 20, 25, 50, 100, 150, 200, 250, 300, 500];
+
 class Table extends React.Component {
   generateColumns = columns => {
     const { maxValues } = this.dataContext;
@@ -59,8 +61,8 @@ class Table extends React.Component {
                     <ReactTable
                       data={data}
                       columns={this.generateColumns(columns)}
-                      pageSizeOptions={[5, 10, 20, 25, 50, 100, 150, 200, 250, 300, 500]}
-                      defaultPageSize={data.length}
+                      pageSizeOptions={pageSizes}
+                      defaultPageSize={_.find(pageSizes, (size) => size >= data.length)}
                       onPageChange={page => save({ page })}
                       page={page}
                       onPageSizeChange={pageSize => save({ pageSize })}
