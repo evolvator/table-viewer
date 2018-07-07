@@ -59,6 +59,7 @@ class Table extends React.Component {
                     <ReactTable
                       data={data}
                       columns={this.generateColumns(columns)}
+                      pageSizeOptions={[5, 10, 20, 25, 50, 100, 150, 200, 250, 300, 500]}
                       onPageChange={page => save({ page })}
                       page={page}
                       onPageSizeChange={pageSize => save({ pageSize })}
