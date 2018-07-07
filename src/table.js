@@ -62,7 +62,6 @@ class Table extends React.Component {
                       data={data}
                       columns={this.generateColumns(columns)}
                       pageSizeOptions={pageSizes}
-                      defaultPageSize={_.find(pageSizes, (size) => size >= data.length)}
                       onPageChange={page => save({ page })}
                       page={page}
                       onPageSizeChange={pageSize => save({ pageSize })}
